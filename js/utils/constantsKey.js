@@ -6,3 +6,5 @@ export const STATUS = Object.freeze({
   COMPLETED: "completed",
 });
 export const STORAGE_KEY = "todoData";
+export const FETCH_BASE_URL =
+  "https://js-todo-list-9ca3a.df.r.appspot.com/api/users";
