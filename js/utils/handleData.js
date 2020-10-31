@@ -1,8 +1,13 @@
 import { STATUS } from "./constantsKey.js";
 import { getStorageData } from "./handleStorage.js";
 import { dispatch } from "../App.js";
+import { getUserList } from "./api.js";
 
 export const handleData = {
+  onFetchUsers: async () => {
+    const response = await getUserList();
+    dispatch({ userData: response });
+  },
   onAdd: (inputVal) => {
     const originTodos = getStorageData();
     const newTodos = [
