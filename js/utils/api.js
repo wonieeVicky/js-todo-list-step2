@@ -28,13 +28,12 @@ export const getUserList = async () => {
     });
     return response;
   } catch (e) {
-    console.log(error);
+    console.error("UserList를 호출하는데 실패했습니다.");
     return [];
   }
 };
 
 export const addUserList = async (userName) => {
-  console.log(userName);
   try {
     const response = await fetchData({
       path: "",
@@ -47,17 +46,15 @@ export const addUserList = async (userName) => {
   }
 };
 
-/*
-
-export const addTodo = async (userName, addData) => {
+export const getTodoList = async (idx) => {
   try {
-    await fetchData({
-      path: `${userName}`,
-      method: 'POST',
-      body: JSON.stringify(addData),
-    })
-  } catch (error) {
-    console.log(error)
-    console.error('Todolist를 추가하는데 실패했습니다.')
+    const response = await fetchData({
+      path: `${idx}`,
+      method: "GET",
+    });
+    return response;
+  } catch (e) {
+    console.error("TodoList를 호출하는데 실패했습니다.");
+    return [];
   }
-}*/
+};
