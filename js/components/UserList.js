@@ -1,10 +1,13 @@
-function UserList({ onAction }) {
+function UserList(userData, { onAction }) {
   if (!new.target) throw new Error("error: UserList must be called with new!");
 
+  this.userData = userData;
   this.$userList = document.querySelector("#user-list");
 
   const mapDataToButton = (user) =>
-    `<button class="ripple" data-idx=${user._id}>${user.name}</button>`;
+    `<button class="ripple user ${
+      user._id === this.userIdx ? "active" : ""
+    }" data-idx=${user._id}>${user.name}</button>`;
   const addUserButtonDom =
     '<button class="ripple user-create-button">+ 유저 생성</button>';
 
@@ -13,17 +16,19 @@ function UserList({ onAction }) {
     this.$userList.innerHTML = userListDom + addUserButtonDom;
   };
 
-  this.setState = (userData) => {
-    this.userData = userData;
+  this.setState = (newData, { idx } = "") => {
+    this.userData = newData;
+    this.userIdx = idx;
     this.render();
   };
 
-  this.init = (() => {
-    onAction.getUsers();
-  })();
+  this.render();
 
   this.$userList.addEventListener("click", (e) => {
-    const { className } = e.target;
+    const {
+      className,
+      dataset: { idx },
+    } = e.target;
     if (className.includes("user-create-button")) {
       // add User
       const userName = prompt("추가하고 싶은 이름을 입력해주세요.");
@@ -33,8 +38,11 @@ function UserList({ onAction }) {
       }
       onAction.addUser({ name: userName });
       return;
-      // get Todos
     }
+    if (className.includes("user") && idx) {
+      onAction.getTodos(idx);
+    }
+    // get Todos
   });
 }
 
