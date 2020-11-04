@@ -80,6 +80,18 @@ export const addTodo = async (userId, contents) => {
     });
     return response;
   } catch (e) {
-    console.error("User를 추가하는데 실패했습니다.");
+    console.error("Todo를 추가하는데 실패했습니다.");
+  }
+};
+
+export const toggleTodo = async (userId, itemId) => {
+  try {
+    const response = await fetchData({
+      path: `${userId}/items/${itemId}/toggle`,
+      method: "PUT",
+    });
+    return response;
+  } catch (e) {
+    console.error("Todo 상태를 변경하는데 실패했습니다.");
   }
 };

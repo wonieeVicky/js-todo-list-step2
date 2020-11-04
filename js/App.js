@@ -8,6 +8,7 @@ import {
   removeUser,
   getTodoList,
   addTodo,
+  toggleTodo,
 } from "./utils/api.js";
 import TodoInput from "./components/TodoInput.js";
 import { STATUS } from "./utils/constantKeys.js";
@@ -18,25 +19,29 @@ function App() {
   const handleData = {
     onAddUser: async (userName) => {
       await addUser(userName);
-      this.setState("userList", this.userIdx || "");
+      this.setState("userList", this.userId || "");
     },
     onRemoveUser: async () => {
-      await removeUser(this.userIdx);
+      await removeUser(this.userId);
       this.setState("userList", "");
     },
     onFetchTodos: (userId) => {
       this.setState("todoList", userId);
     },
     onAddTodo: async (contents) => {
-      if (!this.userIdx) {
+      if (!this.userId) {
         alert("유저를 먼저 선택해주세요.");
         return;
       }
-      await addTodo(this.userIdx, contents);
-      this.setState("todoList", this.userIdx);
+      await addTodo(this.userId, contents);
+      this.setState("todoList", this.userId);
+    },
+    onToggleTodo: async (itemId) => {
+      await toggleTodo(this.userId, itemId);
+      this.setState("todoList", this.userId);
     },
     onBindTodo: (status) => {
-      this.setState("todoList", this.userIdx, { status });
+      this.setState("todoList", this.userId, { status });
     },
     onSetStatus: (status, todoList) => {
       const todosBy = {
@@ -53,15 +58,15 @@ function App() {
     { status = this.status || "all" } = ""
   ) => {
     if (type === "userList") {
-      this.userIdx = userId;
+      this.userId = userId;
       this.userData = await getUserList();
       this.userList.setState(this.userData);
     }
 
-    this.userIdx = userId;
+    this.userId = userId;
     this.status = status;
     const { _id = "", name = "", todoList = [] } = await getTodoList(
-      this.userIdx
+      this.userId
     );
     this.filteredTodoList = handleData.onSetStatus(this.status, todoList);
 
@@ -82,7 +87,9 @@ function App() {
           getTodos: handleData.onFetchTodos,
         },
       });
-      this.todoList = new TodoList();
+      this.todoList = new TodoList({
+        onAction: { toggleTodo: handleData.onToggleTodo },
+      });
       this.todoCount = new TodoCount({
         onAction: {
           removeUser: handleData.onRemoveUser,

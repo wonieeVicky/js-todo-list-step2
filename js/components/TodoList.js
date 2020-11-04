@@ -1,6 +1,6 @@
 import { PRIORITY } from "../utils/constantKeys.js";
 
-function TodoList() {
+function TodoList({ onAction }) {
   if (!new.target) throw new Error("error: TodoList must be called with new!");
 
   this.$list = document.querySelector(".todo-list");
@@ -34,6 +34,16 @@ function TodoList() {
   this.render = () => {
     this.$list.innerHTML = this.todos.map(createTodoList).join("");
   };
+
+  this.$list.addEventListener("click", (e) => {
+    const { className, nodeName } = e.target;
+
+    // onToggle
+    if (className.includes("toggle") && nodeName === "INPUT") {
+      const idx = e.target.closest("li").dataset.idx;
+      onAction.toggleTodo(idx);
+    }
+  });
 }
 
 export default TodoList;
