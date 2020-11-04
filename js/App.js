@@ -38,7 +38,7 @@ function App() {
 
   this.setState = async (type, userId) => {
     if (type === "userList") {
-      this.userIdx = userIdx;
+      this.userIdx = userId;
       this.userData = await getUserList();
       this.userList.setState(this.userData);
     }
@@ -50,6 +50,7 @@ function App() {
     this.userList.setState(this.userData, { idx: _id });
     this.userTitle.setState(name);
     this.todoList.setState(todoList);
+    this.todoCount.setState(todoList);
   };
 
   this.init = async () => {
