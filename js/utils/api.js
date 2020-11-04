@@ -58,15 +58,28 @@ export const removeUser = async (userId) => {
   }
 };
 
-export const getTodoList = async (idx) => {
+export const getTodoList = async (userId) => {
   try {
     const response = await fetchData({
-      path: `${idx}`,
+      path: `${userId}`,
       method: "GET",
     });
     return response;
   } catch (e) {
     console.error("TodoList를 호출하는데 실패했습니다.");
     return [];
+  }
+};
+
+export const addTodo = async (userId, contents) => {
+  try {
+    const response = await fetchData({
+      path: `${userId}/items`,
+      method: "POST",
+      body: JSON.stringify(contents),
+    });
+    return response;
+  } catch (e) {
+    console.error("User를 추가하는데 실패했습니다.");
   }
 };

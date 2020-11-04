@@ -2,7 +2,14 @@ import UserList from "./components/UserList.js";
 import UserTitle from "./components/UserTitle.js";
 import TodoList from "./components/TodoList.js";
 import TodoCount from "./components/TodoCount.js";
-import { getUserList, addUser, removeUser, getTodoList } from "./utils/api.js";
+import {
+  getUserList,
+  addUser,
+  removeUser,
+  getTodoList,
+  addTodo,
+} from "./utils/api.js";
+import TodoInput from "./components/TodoInput.js";
 
 function App() {
   if (!new.target) throw new Error("error: App must be called with new!");
@@ -16,19 +23,27 @@ function App() {
       await removeUser(this.userIdx);
       this.setState("userList", "");
     },
-    onFetchTodos: (idx) => {
-      this.setState("todoList", idx);
+    onFetchTodos: (userId) => {
+      this.setState("todoList", userId);
+    },
+    onAddTodo: async (contents) => {
+      if (!this.userIdx) {
+        alert("유저를 먼저 선택해주세요.");
+        return;
+      }
+      await addTodo(this.userIdx, contents);
+      this.setState("todoList", this.userIdx);
     },
   };
 
-  this.setState = async (type, userIdx) => {
+  this.setState = async (type, userId) => {
     if (type === "userList") {
       this.userIdx = userIdx;
       this.userData = await getUserList();
       this.userList.setState(this.userData);
     }
 
-    this.userIdx = userIdx;
+    this.userIdx = userId;
     const { _id = "", name = "", todoList = [] } = await getTodoList(
       this.userIdx
     );
@@ -51,6 +66,9 @@ function App() {
       this.todoList = new TodoList();
       this.todoCount = new TodoCount({
         onAction: { removeUser: handleData.onRemoveUser },
+      });
+      this.todoInput = new TodoInput({
+        onAction: { addTodo: handleData.onAddTodo },
       });
     } catch (e) {
       console.log(error);
