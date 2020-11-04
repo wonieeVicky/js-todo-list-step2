@@ -324,16 +324,21 @@ body {
   border-color: rgba(175, 47, 47, 0.2);
 }
 
-.clear-completed,
-html .clear-completed:active {
+.button-container {
   float: right;
   position: relative;
+}
+.clear-completed,
+.user-clear-completed,
+html .clear-completed:active,
+html .user-clear-completed:active {
   line-height: 20px;
   text-decoration: none;
   cursor: pointer;
 }
 
-.clear-completed:hover {
+.clear-completed:hover,
+.user-clear-completed:hover {
   text-decoration: underline;
 }
 

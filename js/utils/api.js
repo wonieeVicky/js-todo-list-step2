@@ -33,7 +33,7 @@ export const getUserList = async () => {
   }
 };
 
-export const addUserList = async (userName) => {
+export const addUser = async (userName) => {
   try {
     const response = await fetchData({
       path: "",
@@ -42,7 +42,19 @@ export const addUserList = async (userName) => {
     });
     return response;
   } catch (e) {
-    console.error("UserList를 추가하는데 실패했습니다.");
+    console.error("User를 추가하는데 실패했습니다.");
+  }
+};
+
+export const removeUser = async (userId) => {
+  try {
+    const response = await fetchData({
+      path: `${userId}`,
+      method: "DELETE",
+    });
+    return response;
+  } catch (e) {
+    console.error("User를 삭제하는데 실패했습니다.");
   }
 };
 

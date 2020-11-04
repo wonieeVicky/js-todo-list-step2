@@ -1,26 +1,37 @@
 import UserList from "./components/UserList.js";
 import UserTitle from "./components/UserTitle.js";
 import TodoList from "./components/TodoList.js";
-import { getUserList, addUserList, getTodoList } from "./utils/api.js";
+import TodoCount from "./components/TodoCount.js";
+import { getUserList, addUser, removeUser, getTodoList } from "./utils/api.js";
 
 function App() {
   if (!new.target) throw new Error("error: App must be called with new!");
 
   const handleData = {
     onAddUser: async (userName) => {
-      const response = await addUserList(userName);
-      const originUsers = this.userData || [];
-      this.userData = [...originUsers, response];
-      this.userList.setState(this.userData);
+      await addUser(userName);
+      this.setState("userList", this.userIdx || "");
+    },
+    onRemoveUser: async () => {
+      await removeUser(this.userIdx);
+      this.setState("userList", "");
     },
     onFetchTodos: (idx) => {
-      this.setState(idx);
+      this.setState("todoList", idx);
     },
   };
 
-  this.setState = async (userIdx) => {
+  this.setState = async (type, userIdx) => {
+    if (type === "userList") {
+      this.userIdx = userIdx;
+      this.userData = await getUserList();
+      this.userList.setState(this.userData);
+    }
+
     this.userIdx = userIdx;
-    const { _id, name, todoList } = await getTodoList(this.userIdx);
+    const { _id = "", name = "", todoList = [] } = await getTodoList(
+      this.userIdx
+    );
     this.userList.setState(this.userData, { idx: _id });
     this.userTitle.setState(name);
     this.todoList.setState(todoList);
@@ -38,6 +49,9 @@ function App() {
         },
       });
       this.todoList = new TodoList();
+      this.todoCount = new TodoCount({
+        onAction: { removeUser: handleData.onRemoveUser },
+      });
     } catch (e) {
       console.log(error);
     }

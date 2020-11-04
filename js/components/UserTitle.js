@@ -4,7 +4,10 @@ function UserTitle() {
   this.$userTitle = document.querySelector("#user-title span");
 
   this.render = () => {
-    this.$userTitle.innerHTML = `<strong>${this.name}</strong>'s Todo List`;
+    const htmlString = this.name
+      ? `<strong>${this.name}</strong>'s Todo List`
+      : "유저를 선택해주세요.";
+    this.$userTitle.innerHTML = htmlString;
   };
 
   this.setState = (name) => {
