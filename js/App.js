@@ -1,5 +1,6 @@
 import UserList from "./components/UserList.js";
 import UserTitle from "./components/UserTitle.js";
+import TodoList from "./components/TodoList.js";
 import { getUserList, addUserList, getTodoList } from "./utils/api.js";
 
 function App() {
@@ -36,7 +37,7 @@ function App() {
           getTodos: handleData.onFetchTodos,
         },
       });
-      // this.todoList = new TodoList();
+      this.todoList = new TodoList();
     } catch (e) {
       console.log(error);
     }
