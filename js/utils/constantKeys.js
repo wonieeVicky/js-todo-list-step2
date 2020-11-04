@@ -6,3 +6,8 @@ export const PRIORITY = {
   FIRST: "FIRST",
   SECOND: "SECOND",
 };
+export const STATUS = Object.freeze({
+  ALL: "all",
+  ACTIVE: "active",
+  COMPLETED: "completed",
+});

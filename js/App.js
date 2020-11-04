@@ -10,6 +10,7 @@ import {
   addTodo,
 } from "./utils/api.js";
 import TodoInput from "./components/TodoInput.js";
+import { STATUS } from "./utils/constantKeys.js";
 
 function App() {
   if (!new.target) throw new Error("error: App must be called with new!");
@@ -34,9 +35,23 @@ function App() {
       await addTodo(this.userIdx, contents);
       this.setState("todoList", this.userIdx);
     },
+    onBindTodo: (status) => {
+      this.setState("todoList", this.userIdx, { status });
+    },
+    onSetStatus: (status, todoList) => {
+      const todosBy = {
+        [STATUS.ACTIVE]: todoList.filter((todo) => !todo.isCompleted),
+        [STATUS.COMPLETED]: todoList.filter((todo) => todo.isCompleted),
+      };
+      return todosBy[status] || todoList;
+    },
   };
 
-  this.setState = async (type, userId) => {
+  this.setState = async (
+    type,
+    userId,
+    { status = this.status || "all" } = ""
+  ) => {
     if (type === "userList") {
       this.userIdx = userId;
       this.userData = await getUserList();
@@ -44,13 +59,16 @@ function App() {
     }
 
     this.userIdx = userId;
+    this.status = status;
     const { _id = "", name = "", todoList = [] } = await getTodoList(
       this.userIdx
     );
+    this.filteredTodoList = handleData.onSetStatus(this.status, todoList);
+
     this.userList.setState(this.userData, { idx: _id });
     this.userTitle.setState(name);
-    this.todoList.setState(todoList);
-    this.todoCount.setState(todoList);
+    this.todoList.setState(this.filteredTodoList);
+    this.todoCount.setState(this.filteredTodoList);
   };
 
   this.init = async () => {
@@ -66,10 +84,15 @@ function App() {
       });
       this.todoList = new TodoList();
       this.todoCount = new TodoCount({
-        onAction: { removeUser: handleData.onRemoveUser },
+        onAction: {
+          removeUser: handleData.onRemoveUser,
+          bindTodo: handleData.onBindTodo,
+        },
       });
       this.todoInput = new TodoInput({
-        onAction: { addTodo: handleData.onAddTodo },
+        onAction: {
+          addTodo: handleData.onAddTodo,
+        },
       });
     } catch (e) {
       console.log(error);
